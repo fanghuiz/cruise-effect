@@ -8,5 +8,12 @@ description: > # this means to ignore newlines until "baseurl:"
 $ github_username:  your-github-handle
 
 
+theme: just-the-docs
 
-theme: jekyll-theme-minimal
+aux_links:
+    "Project page on GitHub":
+      - "https://github.com/fanghuiz/cruise-effect"
+   # "Back to Homepage":
+   #   - "https://github.com/fanghuiz/"
+
+layout: default

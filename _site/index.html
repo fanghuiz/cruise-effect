@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <title>Plotting Google Search Trends Data - Cruise-effect</title>
+  <link rel="stylesheet" href="http://localhost:4000/assets/css/just-the-docs.css">
+  
+  <script type="text/javascript" src="http://localhost:4000/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+
+  <div class="page-wrap">
+    <div class="side-bar">
+      <a href="http://localhost:4000" class="site-title fs-6 text-grey-dk-300 lh-tight">Cruise-effect</a>
+      <span class="fs-3"><button class="js-main-nav-trigger navigation-list-toggle btn btn-outline" type="button" data-text-toggle="Hide">Menu</button></span>
+      <div class="navigation main-nav js-main-nav">
+        <nav>
+  <ul class="navigation-list">
+  
+  
+      <li class="navigation-list-item active js-side-nav-item">
+        
+        <a href="http://localhost:4000/" class="navigation-list-link active">Plotting Google Search Trends Data</a>
+          
+        
+      </li>
+  
+  </ul>
+</nav>
+
+      </div>
+      <footer role="contentinfo" class="site-footer">
+        <p class="text-small text-grey-dk-000 mb-0">This site uses <a href="https://github.com/pmarsceill/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.</p>
+      </footer>
+    </div>
+    <div class="main-content-wrap">
+      <div class="page-header">
+        <div class="main-content">
+          
+          
+            <ul class="list-style-none text-small mt-md-1 mb-md-1 pb-4 pb-md-0 js-aux-nav aux-nav">
+              
+                <li class="d-inline-block my-0 mr-2"><a href="https://github.com/fanghuiz/cruise-effect">Project page on GitHub</a></li>
+              
+                <li class="d-inline-block my-0"><a href="https://github.com/fanghuiz/">Back to Homepage</a></li>
+              
+            </ul>
+          
+        </div>
+      </div>
+      <div class="main-content">
+        
+        <div class="page-content">
+          <h1 id="plotting-google-search-trends-data">Plotting Google Search Trends Data</h1>
+
+<p>Google search trends for “motion smoothing” following Tom Cruise <a href="https://twitter.com/TomCruise/status/1070071781757616128">tweet</a> urging people to turn off motion smoothing on their TVs when watching movies at home.</p>
+
+<h2 id="plot">Plot</h2>
+
+<p><img src="https://fanghuiz.github.io/cruise-effect/trend.png" alt="" /></p>
+
+<h2 id="code">Code</h2>
+
+<p>Below is the code to reproduce the plot.  <br />
+Raw data is retrieved from <a href="https://trends.google.com/trends/">Google Trends</a>. Data used for plotting is available on the project’s Github page <a href="https://github.com/fanghuiz/cruise-effect">here</a>.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">readr</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span><span class="w">
+</span><span class="n">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span><span class="w">
+
+</span><span class="n">theme_set</span><span class="p">(</span><span class="n">hrbrthemes</span><span class="o">::</span><span class="n">theme_ipsum_rc</span><span class="p">())</span><span class="w">
+
+</span><span class="c1"># Raw data retrieved is from Nov 28 to Dec 05</span><span class="w">
+</span><span class="c1"># This is the cleaned up version from the raw data downloaded from Google trend. </span><span class="w">
+</span><span class="c1"># All time points with too few data (coded as &lt;1 by Google) is changed to 0.5</span><span class="w">
+</span><span class="n">compare</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"compare.csv"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Subset data to Dec 01 - Dec 05</span><span class="w">
+</span><span class="n">compare_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compare</span><span class="p">[</span><span class="m">55</span><span class="o">:</span><span class="n">nrow</span><span class="p">(</span><span class="n">compare</span><span class="p">),</span><span class="w"> </span><span class="p">]</span><span class="w">
+
+</span><span class="c1"># Convert to tidy formate</span><span class="w">
+</span><span class="n">compare_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compare_subset</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">gather</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">search_on</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interest</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="n">Time</span><span class="p">)</span><span class="w">
+
+</span><span class="n">compare_subset</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compare_subset</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">mutate</span><span class="p">(</span><span class="n">location</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"us_web"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"United States"</span><span class="p">,</span><span class="w">
+                              </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"us_youtube"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"United States"</span><span class="p">,</span><span class="w">
+                              </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"ww_web"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"Worldwide"</span><span class="p">,</span><span class="w">
+                              </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"ww_youtube"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"Worldwide"</span><span class="p">),</span><span class="w">
+         </span><span class="n">venue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">case_when</span><span class="p">(</span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"us_web"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"Web Search"</span><span class="p">,</span><span class="w">
+                           </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"us_youtube"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"YouTube Search"</span><span class="p">,</span><span class="w">
+                           </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"ww_web"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"Web Search"</span><span class="p">,</span><span class="w">
+                           </span><span class="n">search_on</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"ww_youtube"</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="s2">"YouTube Search"</span><span class="p">))</span><span class="w">
+
+</span><span class="c1"># Timestamp for Cruise tweet</span><span class="w">
+</span><span class="n">tweet</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">ymd_hms</span><span class="p">(</span><span class="s2">"2018-12-04 16:45:00"</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Base plot</span><span class="w">
+</span><span class="n">trend_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">compare_subset</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Time</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interest</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">venue</span><span class="p">))</span><span class="w">
+
+</span><span class="n">trend_plot</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_line</span><span class="p">(</span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.9</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0.8</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">geom_vline</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">xintercept</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tweet</span><span class="p">),</span><span class="w">
+             </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"grey40"</span><span class="p">,</span><span class="w"> </span><span class="n">linetype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dashed"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">annotate</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tweet</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Tom Cruise tweet\nDec 04, 16:45 (EST)"</span><span class="p">,</span><span class="w"> 
+           </span><span class="n">hjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.1</span><span class="p">,</span><span class="w"> </span><span class="n">vjust</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">,</span><span class="w"> </span><span class="n">lineheight</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w">
+           </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Roboto Condensed"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">facet_wrap</span><span class="p">(</span><span class="o">~</span><span class="w"> </span><span class="n">location</span><span class="p">,</span><span class="w"> </span><span class="n">ncol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Interests in TV Motion Smoothing following Tom Cruise PSA"</span><span class="p">,</span><span class="w">
+       </span><span class="n">subtitle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Google search trends for \"motion smoothing\" from Dec 01 to Dec 05 2018"</span><span class="p">,</span><span class="w">
+       </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"'Interest over time' numbers represent search interest relative to the highest point on the chart for the given region and time.
+       A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular.
+       \nData: Google Trends. Search term: \"motion smoothing\". Retrieved on Dec 05 2018, 17:00 (EST)"</span><span class="p">,</span><span class="w">
+       </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Time"</span><span class="p">,</span><span class="w">
+       </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Interest\nover time"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"skyblue1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"salmon"</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">
+  </span><span class="n">theme</span><span class="p">(</span><span class="n">legend.position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"bottom"</span><span class="p">,</span><span class="w">
+        </span><span class="n">legend.title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">(),</span><span class="w">
+        </span><span class="n">axis.title.y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">))</span><span class="w">
+
+</span></code></pre></div></div>
+
+
+
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

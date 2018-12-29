@@ -1,17 +1,3 @@
-# Plotting Google Search Trends Data
-
-Google search trends for "motion smoothing" following Tom Cruise [tweet](https://twitter.com/TomCruise/status/1070071781757616128) urging people to turn off motion smoothing on their TVs when watching movies at home. 
-
-## Plot
-
-![](https://fanghuiz.github.io/cruise-effect/trend.png)
-
-## Code
-
-Below is the code to reproduce the plot.    
-Raw data is retrieved from [Google Trends](https://trends.google.com/trends/). Data used for plotting is available on the project's Github page [here](https://github.com/fanghuiz/cruise-effect).    
-
-```R
 library(readr)
 library(ggplot2)
 library(tidyverse)
@@ -68,4 +54,3 @@ trend_plot +
         legend.title = element_blank(),
         axis.title.y = element_text(angle = 0))
 
-```
