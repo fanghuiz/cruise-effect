@@ -9,4 +9,4 @@ $ github_username:  your-github-handle
 
 
 
-theme: jekyll-theme-minimal
+remote_theme: "mmistakes/minimal-mistakes@4.14.1
