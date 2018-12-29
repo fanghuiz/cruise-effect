@@ -8,7 +8,7 @@ description: > # this means to ignore newlines until "baseurl:"
 $ github_username:  your-github-handle
 
 
-theme: just-the-docs
+remote_theme: just-the-docs
 
 aux_links:
     "Project page on GitHub":
