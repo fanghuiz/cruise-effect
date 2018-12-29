@@ -2,7 +2,7 @@
 
 Google search trends for "motion smoothing" following Tom Cruise [tweet](https://twitter.com/TomCruise/status/1070071781757616128) urging people to turn off motion smoothing on their TVs when watching movies at home. 
 
-![](cruise-effect/trend.png)
+![](https://fanghuiz.github.io/cruise-effect/trend.png)
 
 Below is the code to reproduce the plot. Data used is available on the project's Github page [here](https://github.com/fanghuiz/cruise-effect).    
 
