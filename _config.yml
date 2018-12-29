@@ -9,12 +9,4 @@ $ github_username:  your-github-handle
 
 
 
-remote_theme: mmistakes/minimal-mistakes@4.14.1
-
-plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-  - jekyll-include-cache
+theme: minima
